@@ -508,8 +508,10 @@ function validate(idx) {
       if (!document.querySelector('input[name="q6"]:checked')) { document.getElementById('e_q6').style.display='block'; valid=false; }
       if (!document.querySelector('input[name="q7_indicado"]:checked')) { document.getElementById('e_q7_indicado').style.display='block'; valid=false; }
       const indicadoVal = document.querySelector('input[name="q7_indicado"]:checked')?.value;
-      if (!document.getElementById('q7_cpf_indicador').value.trim()) { document.getElementById('e_q7_cpf_indicador').style.display='block'; document.getElementById('e_q7_cpf_indicador').textContent = '⚠️ Informe o CPF do indicador'; valid=false; }
-      else if (!validarCPF(document.getElementById('q7_cpf_indicador').value)) { document.getElementById('e_q7_cpf_indicador').style.display='block'; document.getElementById('e_q7_cpf_indicador').textContent = '⚠️ CPF do indicador inválido'; valid=false; }
+      if (indicadoVal === 'sim') {
+        if (!document.getElementById('q7_cpf_indicador').value.trim()) { document.getElementById('e_q7_cpf_indicador').style.display='block'; document.getElementById('e_q7_cpf_indicador').textContent = '⚠️ Informe o CPF do indicador'; valid=false; }
+        else if (!validarCPF(document.getElementById('q7_cpf_indicador').value)) { document.getElementById('e_q7_cpf_indicador').style.display='block'; document.getElementById('e_q7_cpf_indicador').textContent = '⚠️ CPF do indicador inválido'; valid=false; }
+      }
     }
   if (idx === 2) {
       let v = true;
