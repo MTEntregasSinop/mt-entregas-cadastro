@@ -191,6 +191,12 @@
       <input type="tel" id="q7_cpf_indicador" placeholder="000.000.000-00" maxlength="14">
       <div class="error-msg" id="e_q7_cpf_indicador">⚠️ Informe o CPF do indicador</div>
     </div>
+
+    <!-- Honeypot: campo anti-bot (invisível para humanos) -->
+    <div class="question" style="display:none;visibility:hidden;position:absolute;left:-9999px;" aria-hidden="true">
+      <label>Website</label>
+      <input type="text" id="honeypot_website" name="website" tabindex="-1" autocomplete="off">
+    </div>
   </div>
 
   <!-- Seção 3: Dados Pessoais -->
@@ -502,12 +508,14 @@ function validate(idx) {
       if (!document.querySelector('input[name="q6"]:checked')) { document.getElementById('e_q6').style.display='block'; valid=false; }
       if (!document.querySelector('input[name="q7_indicado"]:checked')) { document.getElementById('e_q7_indicado').style.display='block'; valid=false; }
       const indicadoVal = document.querySelector('input[name="q7_indicado"]:checked')?.value;
-      if (indicadoVal === 'sim' && !document.getElementById('q7_cpf_indicador').value.trim()) { document.getElementById('e_q7_cpf_indicador').style.display='block'; valid=false; }
+      if (!document.getElementById('q7_cpf_indicador').value.trim()) { document.getElementById('e_q7_cpf_indicador').style.display='block'; document.getElementById('e_q7_cpf_indicador').textContent = '⚠️ Informe o CPF do indicador'; valid=false; }
+      else if (!validarCPF(document.getElementById('q7_cpf_indicador').value)) { document.getElementById('e_q7_cpf_indicador').style.display='block'; document.getElementById('e_q7_cpf_indicador').textContent = '⚠️ CPF do indicador inválido'; valid=false; }
     }
   if (idx === 2) {
       let v = true;
       if (!document.getElementById('q7_nome').value.trim()) { document.getElementById('e_q7_nome').style.display='block'; v=false; }
-      if (!document.getElementById('q8_cpf').value.trim()) { document.getElementById('e_q8_cpf').style.display='block'; v=false; }
+      if (!document.getElementById('q8_cpf').value.trim()) { document.getElementById('e_q8_cpf').style.display='block'; document.getElementById('e_q8_cpf').textContent = '⚠️ CPF é obrigatório'; v=false; }
+      else if (!validarCPF(document.getElementById('q8_cpf').value)) { document.getElementById('e_q8_cpf').style.display='block'; document.getElementById('e_q8_cpf').textContent = '⚠️ CPF inválido. Verifique os números digitados.'; v=false; }
       if (!document.getElementById('q9_nascimento').value) { document.getElementById('e_q9_nascimento').style.display='block'; v=false; }
       if (!document.getElementById('q10_telefone').value.trim()) { document.getElementById('e_q10_telefone').style.display='block'; v=false; }
       if (!document.getElementById('q10b_endereco').value.trim()) { document.getElementById('e_q10b_endereco').style.display='block'; v=false; }
@@ -554,6 +562,11 @@ function validate(idx) {
 }
 
 function submitForm() {
+  // Honeypot: verifica se bot preencheu campo oculto
+  if (document.getElementById('honeypot_website').value !== '') {
+    console.log('Bot detectado — honeypot preenchido');
+    return;
+  }
   if (!validate(5)) return;
   if (APPS_SCRIPT_URL.includes('APPS_SCRIPT_URL_AQUI') || APPS_SCRIPT_URL === '' || APPS_SCRIPT_URL === 'SEU_URL_AQUI') {
     alert('Atenção: Configure o APPS_SCRIPT_URL no código antes de enviar!');
@@ -731,6 +744,24 @@ function isMenorIdade() {
   return idade < 18;
 }
 
+function validarCPF(cpf) {
+  cpf = cpf.replace(/[^0-9]/g, '');
+  if (cpf.length !== 11) return false;
+  if (/^(\d)\1{10}$/.test(cpf)) return false; // 111.111.111-11, 000.000.000-00, etc
+  let soma = 0;
+  let resto;
+  for (let i = 1; i <= 9; i++) soma += parseInt(cpf.substring(i - 1, i)) * (11 - i);
+  resto = (soma * 10) % 11;
+  if (resto === 10 || resto === 11) resto = 0;
+  if (resto !== parseInt(cpf.substring(9, 10))) return false;
+  soma = 0;
+  for (let i = 1; i <= 10; i++) soma += parseInt(cpf.substring(i - 1, i)) * (12 - i);
+  resto = (soma * 10) % 11;
+  if (resto === 10 || resto === 11) resto = 0;
+  if (resto !== parseInt(cpf.substring(10, 11))) return false;
+  return true;
+}
+
 function toggleIndicacao(show) {
   const bloco = document.getElementById('bloco_cpf_indicador');
   bloco.style.display = show ? '' : 'none';
@@ -776,6 +807,7 @@ window.updateCNHName = updateCNHName;
 window.openWhatsApp = openWhatsApp;
 window.isMenorIdade = isMenorIdade;
 window.checkIdade = checkIdade;
+window.validarCPF = validarCPF;
 
 // Input masks
 document.getElementById('q8_cpf').addEventListener('input', function() { maskCPF(this); });
