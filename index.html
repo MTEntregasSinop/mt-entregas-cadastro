@@ -212,8 +212,11 @@
 
     <div class="question">
       <label for="q9_nascimento">Data de nascimento <span class="req">*</span></label>
-      <input type="date" id="q9_nascimento">
+      <input type="date" id="q9_nascimento" onchange="checkIdade()">
       <div class="error-msg" id="e_q9_nascimento">⚠️ Data de nascimento é obrigatória</div>
+      <div id="menor-idade-aviso" style="display:none; margin-top:10px; padding:12px 14px; background:#fff8e1; border:1px solid #ffe082; border-radius:6px; font-size:13px; color:#f57f17;">
+        <strong>⚠️ Atenção:</strong> Você tem menos de 18 anos. Seu cadastro foi registrado, mas só poderá ser aprovado após você completar 18 anos.
+      </div>
     </div>
 
     <div class="question">
@@ -350,34 +353,76 @@
   </div>
 
   <!-- Seção 7: Sucesso -->
-  <div id="s7" class="section end-page" style="display:none;">
-    <div class="icon">✅</div>
-    <h2>Cadastro enviado com sucesso!</h2>
-    <p>Agradecemos por completar seu cadastro. Estamos ansiosos para recebê-lo(a) em nossa equipe!</p>
-
-    <div id="cnh-vencida-sucesso" style="display:none; margin:14px 0; padding:14px 16px; background:#fff3e0; border:1px solid #ffcc80; border-radius:6px; text-align:left; font-size:14px; color:#e65100;">
-      <strong>⚠️ Sua CNH está vencida</strong><br>
-      Para ser aprovado, você precisa atualizar sua CNH e enviar para nossa equipe via WhatsApp.
+  <div id="s7" class="section" style="display:none; padding:0; background:#f8f9fb;">
+    <div style="padding:28px 24px 16px; text-align:center;">
+      <div style="width:56px; height:56px; background:#22c55e; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; margin-bottom:12px; font-size:28px; color:#fff;">✓</div>
+      <h2 style="font-size:20px; font-weight:700; color:#22c55e; margin-bottom:4px;">Cadastro enviado com sucesso!</h2>
+      <p style="font-size:14px; color:#666;">Seu pré-cadastro foi recebido com sucesso.</p>
     </div>
 
-    <div class="highlight-box" style="text-align:left;">
-      <strong>📋 Próximos passos:</strong>
-      <p style="margin-top:8px;"><strong>1. Análise documental</strong><br><span style="margin-left:12px;display:block;">Nossa equipe irá analisar os documentos enviados.</span></p>
-      <p style="margin-top:8px;"><strong>2. Treinamento presencial (obrigatório)</strong><br><span style="margin-left:12px;display:block;">Após a análise documental, comparecer para o treinamento presencial no endereço abaixo.</span></p>
-      <p style="margin-top:8px;"><strong>3. Aprovação final</strong><br><span style="margin-left:12px;display:block;">Após a conclusão do treinamento presencial, o cadastro segue para a aprovação final.</span></p>
-      <p style="margin-top:8px;"><strong>4. Notificação</strong><br><span style="margin-left:12px;display:block;">Você será notificado por <strong>WhatsApp</strong> quando aprovado e liberado.</span></p>
-      <div style="margin-top:12px;padding:10px 14px;background:#f0f5ff;border-radius:4px;border-left:3px solid #003366;">
-        <strong style="color:#003366;">⏱ Prazo:</strong> A análise do seu cadastro e a aprovação final ocorrerão em até <strong>24 horas úteis</strong> após a conclusão do treinamento presencial.
+    <div style="margin:0 16px 16px; padding:20px; background:#dcfce7; border:2px solid #86efac; border-radius:12px; text-align:center;">
+      <div style="font-size:24px; color:#22c55e; margin-bottom:8px;">📱</div>
+      <h3 style="font-size:16px; font-weight:700; color:#15803d; margin-bottom:8px;">Falta apenas 1 passo para concluir seu pré-cadastro</h3>
+      <p style="font-size:13px; color:#166534; margin-bottom:12px; line-height:1.5;">Clique no botão abaixo e envie a mensagem automática para nossa equipe no WhatsApp.<br>Esse passo é <strong>obrigatório</strong> para identificarmos seu cadastro e darmos continuidade à análise.</p>
+      <button id="btnWhatsApp" style="background:#25d366; color:#fff; border:none; border-radius:10px; padding:14px 24px; font-size:16px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:8px; width:100%; justify-content:center; transition:background 0.2s;">
+        <span>💬</span> Enviar mensagem no WhatsApp
+      </button>
+      <p style="font-size:12px; color:#15803d; margin-top:10px;">✓ Você será redirecionado para o WhatsApp com uma mensagem pronta.</p>
+    </div>
+
+    <div id="alertas-condicionais" style="margin:0 16px 16px;">
+      <div id="cnh-vencida-sucesso" style="display:none; padding:14px 16px; background:#fff3e0; border:1px solid #ffcc80; border-radius:8px; font-size:13px; color:#e65100; margin-bottom:12px;">
+        <strong>⚠️ Sua CNH está vencida</strong><br>
+        Para ser aprovado, você precisa atualizar sua CNH e enviar para nossa equipe via WhatsApp.
+      </div>
+      <div id="menor-idade-sucesso" style="display:none; padding:14px 16px; background:#fff8e1; border:1px solid #ffe082; border-radius:8px; font-size:13px; color:#f57f17;">
+        <strong>⚠️ Você tem menos de 18 anos</strong><br>
+        Seu cadastro foi registrado, mas só poderá ser aprovado após você completar 18 anos.
       </div>
     </div>
 
-    <p class="address">📍 Rua das Primaveras, nº 2792</p>
+    <div style="margin:0 16px 16px; padding:20px; background:#fff; border:1px solid #e0e0e0; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+      <h4 style="font-size:15px; font-weight:700; color:#003366; margin-bottom:16px;">O que acontece agora?</h4>
+      <div style="display:flex; gap:12px; margin-bottom:14px;">
+        <div style="width:28px; height:28px; min-width:28px; background:#003366; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700;">1</div>
+        <div>
+          <strong style="font-size:14px; color:#222;">Análise dos documentos</strong>
+          <p style="font-size:13px; color:#666; margin-top:2px;">Nossa equipe irá analisar as informações e documentos enviados.</p>
+        </div>
+      </div>
+      <div style="display:flex; gap:12px; margin-bottom:14px;">
+        <div style="width:28px; height:28px; min-width:28px; background:#003366; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700;">2</div>
+        <div>
+          <strong style="font-size:14px; color:#222;">Treinamento presencial</strong>
+          <p style="font-size:13px; color:#666; margin-top:2px;">Se estiver tudo correto, entraremos em contato para agendar seu treinamento obrigatório.</p>
+        </div>
+      </div>
+      <div style="display:flex; gap:12px;">
+        <div style="width:28px; height:28px; min-width:28px; background:#22c55e; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700;">3</div>
+        <div>
+          <strong style="font-size:14px; color:#222;">Aprovação final</strong>
+          <p style="font-size:13px; color:#666; margin-top:2px;">Após concluir o treinamento, seu cadastro será aprovado e você será liberado para realizar entregas.</p>
+        </div>
+      </div>
+    </div>
 
-    <button id="btnWhatsApp" class="whatsapp-btn">
-      <span>📱</span> Enviar mensagem no WhatsApp
-    </button>
+    <div style="margin:0 16px 16px; display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+      <div style="padding:16px; background:#fff; border:1px solid #e0e0e0; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,0.04); text-align:center;">
+        <div style="font-size:20px; margin-bottom:6px;">⏱️</div>
+        <strong style="font-size:14px; color:#003366; display:block; margin-bottom:4px;">Prazo</strong>
+        <p style="font-size:12px; color:#666; line-height:1.5;">Após a conclusão do treinamento presencial, a aprovação final ocorre em até <strong style="color:#003366;">24 horas úteis</strong>.</p>
+      </div>
+      <div style="padding:16px; background:#fff; border:1px solid #e0e0e0; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,0.04); text-align:center;">
+        <div style="font-size:20px; margin-bottom:6px;">📍</div>
+        <strong style="font-size:14px; color:#003366; display:block; margin-bottom:4px;">Endereço do treinamento</strong>
+        <p style="font-size:12px; color:#666; line-height:1.5;"><strong>MT Entregas</strong><br>Rua das Primaveras, nº 2792<br>Sinop - MT, 78550-000</p>
+      </div>
+    </div>
 
-    <p class="thank-you">Obrigado por fazer parte da MT Entregas! 🚀</p>
+    <div style="padding:20px 24px 28px; text-align:center;">
+      <p style="font-size:15px; color:#003366; font-weight:600;">🚀 Obrigado por fazer parte da MT Entregas!</p>
+      <p style="font-size:13px; color:#666; margin-top:4px;">Estamos ansiosos para te ver nas entregas!</p>
+    </div>
   </div>
 
   <!-- Navegação -->
@@ -567,6 +612,9 @@ function submitForm() {
       if (isCNHVencida()) {
         document.getElementById('cnh-vencida-sucesso').style.display = 'block';
       }
+      if (isMenorIdade()) {
+        document.getElementById('menor-idade-sucesso').style.display = 'block';
+      }
       showSection(6);
       entregadorNome = document.getElementById('q7_nome').value.trim();
       entregadorTelefone = document.getElementById('q10_telefone').value.trim();
@@ -590,6 +638,16 @@ async function fileToBase64(file) {
 }
 
 function getFormData() {
+  const dataNasc = document.getElementById('q9_nascimento').value;
+  let menorIdade = 'Não';
+  if (dataNasc) {
+    const hoje = new Date();
+    const nasc = new Date(dataNasc + 'T00:00:00');
+    let idade = hoje.getFullYear() - nasc.getFullYear();
+    const m = hoje.getMonth() - nasc.getMonth();
+    if (m < 0 || (m === 0 && hoje.getDate() < nasc.getDate())) idade--;
+    if (idade < 18) menorIdade = 'Sim';
+  }
   return {
     q7_nome: document.getElementById('q7_nome').value.trim(),
     q8_cpf: document.getElementById('q8_cpf').value.trim().replace(/[^0-9]/g, ''),
@@ -616,7 +674,8 @@ function getFormData() {
     d1: document.getElementById('d1').checked ? 'Sim' : 'Não',
     d2: document.getElementById('d2').checked ? 'Sim' : 'Não',
     d3: document.getElementById('d3').checked ? 'Sim' : 'Não',
-    d4: document.getElementById('d4').checked ? 'Sim' : 'Não'
+    d4: document.getElementById('d4').checked ? 'Sim' : 'Não',
+    menor_idade: menorIdade
   };
 }
 
@@ -647,6 +706,29 @@ function checkCNHValidity() {
   const aviso = document.getElementById('cnh-vencida-aviso');
   if (isCNHVencida()) aviso.style.display = 'block';
   else aviso.style.display = 'none';
+}
+
+function checkIdade() {
+  const dataNasc = document.getElementById('q9_nascimento').value;
+  const aviso = document.getElementById('menor-idade-aviso');
+  if (!dataNasc) { aviso.style.display = 'none'; return; }
+  const hoje = new Date();
+  const nasc = new Date(dataNasc + 'T00:00:00');
+  let idade = hoje.getFullYear() - nasc.getFullYear();
+  const m = hoje.getMonth() - nasc.getMonth();
+  if (m < 0 || (m === 0 && hoje.getDate() < nasc.getDate())) idade--;
+  aviso.style.display = (idade < 18) ? 'block' : 'none';
+}
+
+function isMenorIdade() {
+  const dataNasc = document.getElementById('q9_nascimento').value;
+  if (!dataNasc) return false;
+  const hoje = new Date();
+  const nasc = new Date(dataNasc + 'T00:00:00');
+  let idade = hoje.getFullYear() - nasc.getFullYear();
+  const m = hoje.getMonth() - nasc.getMonth();
+  if (m < 0 || (m === 0 && hoje.getDate() < nasc.getDate())) idade--;
+  return idade < 18;
 }
 
 function toggleIndicacao(show) {
@@ -692,7 +774,8 @@ window.toggleCNH = toggleCNH;
 window.checkCNHValidity = checkCNHValidity;
 window.updateCNHName = updateCNHName;
 window.openWhatsApp = openWhatsApp;
-window.isCNHVencida = isCNHVencida;
+window.isMenorIdade = isMenorIdade;
+window.checkIdade = checkIdade;
 
 // Input masks
 document.getElementById('q8_cpf').addEventListener('input', function() { maskCPF(this); });
