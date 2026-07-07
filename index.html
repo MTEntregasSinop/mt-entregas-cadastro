@@ -507,8 +507,9 @@ function validate(idx) {
       if (!document.querySelector('input[name="q5"]:checked')) { document.getElementById('e_q5').style.display='block'; valid=false; }
       if (!document.querySelector('input[name="q6"]:checked')) { document.getElementById('e_q6').style.display='block'; valid=false; }
       if (!document.querySelector('input[name="q7_indicado"]:checked')) { document.getElementById('e_q7_indicado').style.display='block'; valid=false; }
-      const indicadoVal = document.querySelector('input[name="q7_indicado"]:checked')?.value;
-      if (indicadoVal === 'sim') {
+      const indicadoVal = document.querySelector('input[name="q7_indicado"]:checked');
+      const indicadoValStr = indicadoVal ? indicadoVal.value : '';
+      if (indicadoValStr === 'sim') {
         if (!document.getElementById('q7_cpf_indicador').value.trim()) { document.getElementById('e_q7_cpf_indicador').style.display='block'; document.getElementById('e_q7_cpf_indicador').textContent = '⚠️ Informe o CPF do indicador'; valid=false; }
         else if (!validarCPF(document.getElementById('q7_cpf_indicador').value)) { document.getElementById('e_q7_cpf_indicador').style.display='block'; document.getElementById('e_q7_cpf_indicador').textContent = '⚠️ CPF do indicador inválido'; valid=false; }
       }
@@ -577,7 +578,8 @@ function submitForm() {
   document.getElementById('loading').style.display = 'flex';
   document.getElementById('nav-btns').style.display = 'none';
 
-  const cnhTipo = document.querySelector('input[name="q13_cnh_tipo"]:checked')?.value || '';
+  const cnhTipo = document.querySelector('input[name="q13_cnh_tipo"]:checked');
+  const cnhTipoValue = cnhTipo ? cnhTipo.value : '';
   const files = [];
 
   if (cnhTipo === 'digital') {
@@ -671,21 +673,56 @@ function getFormData() {
     q10b_endereco: document.getElementById('q10b_endereco').value.trim(),
     q11_validade_cnh: document.getElementById('q11_validade_cnh').value,
     q12_chave_pix: document.getElementById('q12_chave_pix').value.trim(),
-    q13_cnh_tipo: document.querySelector('input[name="q13_cnh_tipo"]:checked')?.value || '',
-    q14_foto_filename: document.getElementById('q14_foto').files[0]?.name || '',
+    q13_cnh_tipo: (function() {
+      var el = document.querySelector('input[name="q13_cnh_tipo"]:checked');
+      return el ? el.value : '';
+    })(),
+    q14_foto_filename: (function() {
+      var files = document.getElementById('q14_foto').files;
+      return files.length > 0 ? files[0].name : '';
+    })(),
     q15_data_treinamento: document.getElementById('q15_data').value,
-    q16_horario_treinamento: document.querySelector('input[name="q16_horario"]:checked')?.value || '',
-    q1_experiencia: document.querySelector('input[name="q1"]:checked')?.value || '',
-    q2_veiculos: Array.from(document.querySelectorAll('input[name="q2"]:checked')).map(c => c.value).join(', '),
-    q3_disponibilidade: document.querySelector('input[name="q3"]:checked')?.value || '',
-    q4_area: Array.from(document.querySelectorAll('input[name="q4"]:checked')).map(c => c.value).join(', '),
-    q5_condicoes: document.querySelector('input[name="q5"]:checked')?.value || '',
-    q6_conhecimento: document.querySelector('input[name="q6"]:checked')?.value || '',
-    q7_indicado: document.querySelector('input[name="q7_indicado"]:checked')?.value || '',
+    q16_horario_treinamento: (function() {
+      var el = document.querySelector('input[name="q16_horario"]:checked');
+      return el ? el.value : '';
+    })(),
+    q1_experiencia: (function() {
+      var el = document.querySelector('input[name="q1"]:checked');
+      return el ? el.value : '';
+    })(),
+    q2_veiculos: Array.from(document.querySelectorAll('input[name="q2"]:checked')).map(function(c) { return c.value; }).join(', '),
+    q3_disponibilidade: (function() {
+      var el = document.querySelector('input[name="q3"]:checked');
+      return el ? el.value : '';
+    })(),
+    q4_area: Array.from(document.querySelectorAll('input[name="q4"]:checked')).map(function(c) { return c.value; }).join(', '),
+    q5_condicoes: (function() {
+      var el = document.querySelector('input[name="q5"]:checked');
+      return el ? el.value : '';
+    })(),
+    q6_conhecimento: (function() {
+      var el = document.querySelector('input[name="q6"]:checked');
+      return el ? el.value : '';
+    })(),
+    q7_indicado: (function() {
+      var el = document.querySelector('input[name="q7_indicado"]:checked');
+      return el ? el.value : '';
+    })(),
     q7_cpf_indicador: document.getElementById('q7_cpf_indicador').value.trim().replace(/[^0-9]/g, ''),
-    q13_cnh_filename: document.getElementById('q13_digital').files[0]?.name || document.getElementById('q13_frente').files[0]?.name || '',
-    q13_cnh2_filename: document.getElementById('q13_verso').files[0]?.name || '',
-    q14_foto_filename: document.getElementById('q14_foto').files[0]?.name || 'Sim',
+    q13_cnh_filename: (function() {
+      var digital = document.getElementById('q13_digital').files;
+      if (digital.length > 0) return digital[0].name;
+      var frente = document.getElementById('q13_frente').files;
+      return frente.length > 0 ? frente[0].name : '';
+    })(),
+    q13_cnh2_filename: (function() {
+      var verso = document.getElementById('q13_verso').files;
+      return verso.length > 0 ? verso[0].name : '';
+    })(),
+    q14_foto_filename: (function() {
+      var foto = document.getElementById('q14_foto').files;
+      return foto.length > 0 ? foto[0].name : 'Sim';
+    })(),
     d1: document.getElementById('d1').checked ? 'Sim' : 'Não',
     d2: document.getElementById('d2').checked ? 'Sim' : 'Não',
     d3: document.getElementById('d3').checked ? 'Sim' : 'Não',
