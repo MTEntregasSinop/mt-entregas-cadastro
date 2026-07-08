@@ -582,10 +582,10 @@ function submitForm() {
   const cnhTipoValue = cnhTipo ? cnhTipo.value : '';
   const files = [];
 
-  if (cnhTipo === 'digital') {
+  if (cnhTipoValue === 'digital') {
     const f = document.getElementById('q13_digital').files[0];
     if (f) files.push({ file: f, key: 'cnh1' });
-  } else if (cnhTipo === 'fisica') {
+  } else if (cnhTipoValue === 'fisica') {
     const frente = document.getElementById('q13_frente').files[0];
     const verso = document.getElementById('q13_verso').files[0];
     if (frente) files.push({ file: frente, key: 'cnh1' });
